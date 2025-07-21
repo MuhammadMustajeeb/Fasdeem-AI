@@ -2,19 +2,21 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Toaster } from "react-hot-toast";
+import Footer from "../components/Footer";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-gray-50">
-        <div className="min-h-screen flex flex-col sm:flex-row">
+        <div className="flex min-h-screen flex-col sm:flex-row">
           {/* Sidebar */}
           <Sidebar />
 
-          {/* Main Area */}
-          <div className="flex-1 flex flex-col">
+          {/* Main Content */}
+          <div className="flex flex-1 flex-col">
             <Navbar />
-            <main className="p-4 sm:p-6">{children}</main>
+            <main className="">{children}</main>
+            <Footer />
           </div>
         </div>
 

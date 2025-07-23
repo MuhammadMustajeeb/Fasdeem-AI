@@ -10,7 +10,8 @@ export default function AdminDashboard() {
   const user = session?.user;
 
   // Optional: Admin protection
-  if (!user) return <p className="text-center mt-10">Please log in to access admin.</p>;
+  if (!user)
+    return <p className="text-center mt-10">Please log in to access admin.</p>;
   if (user.email !== "mprogramming48@gmail.com") {
     return <p className="text-center mt-10">Access denied: Not admin.</p>;
   }
@@ -18,17 +19,20 @@ export default function AdminDashboard() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<any | null>(null);
 
   useEffect(() => {
-  if (user) fetchProducts();
-}, [user]);
-
+    if (user) fetchProducts();
+  }, [user]);
 
   const fetchProducts = async () => {
-    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (error) {
       toast.error("Failed to load products");
       return;
@@ -37,58 +41,58 @@ export default function AdminDashboard() {
   };
 
   const handleSubmit = async () => {
-  if (!name || !price) return toast.error("Name and price are required");
+    if (!name || !price) return toast.error("Name and price are required");
+    if (!user) return toast.error("User not logged in");
 
-  if (!user) return toast.error("User not logged in");
+    const res = await fetch("/api/upload-product", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        price,
+        description,
+        whatsapp,
+        image: `https://picsum.photos/seed/${Math.random()}/400/300`,
+        user_id: user.id,
+      }),
+    });
 
-  const res = await fetch("/api/upload-product", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name,
-      price,
-      description,
-      image: `https://picsum.photos/seed/${Math.random()}/400/300`,
-      user_id: user.id, // ✅ Fix: Send user ID to backend
-    }),
-  });
+    let result;
+    try {
+      result = await res.json();
+    } catch (err) {
+      return toast.error("Failed to parse server response");
+    }
 
-  let result;
-  try {
-    result = await res.json();
-  } catch (err) {
-    return toast.error("Failed to parse server response");
-  }
+    if (!result.success) {
+      toast.error("Upload failed: " + result.error);
+    } else {
+      toast.success("Product uploaded");
+      setName("");
+      setPrice("");
+      setDescription("");
+      setWhatsapp("");
+      fetchProducts();
+    }
+  };
 
-  if (!result.success) {
-    toast.error("Upload failed: " + result.error);
-  } else {
-    toast.success("Product uploaded");
-    setName("");
-    setPrice("");
-    setDescription("");
-    fetchProducts();
-  }
-};
+  const deleteProduct = async (id: string) => {
+    const res = await fetch("/api/delete-product", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
 
-const deleteProduct = async (id: string) => {
-  const res = await fetch("/api/delete-product", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),
-  });
+    const result = await res.json();
 
-  const result = await res.json();
+    if (!result.success) {
+      toast.error("Delete failed: " + result.error);
+    } else {
+      toast.success("Deleted");
+      fetchProducts();
+    }
+  };
 
-  if (!result.success) {
-    toast.error("Delete failed: " + result.error);
-  } else {
-    toast.success("Deleted");
-    fetchProducts();
-  }
-};
-
-  
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -114,12 +118,20 @@ const deleteProduct = async (id: string) => {
           className="input input-bordered w-full"
         />
         <input
-  type="text"
-  placeholder="Enter product description"
-  value={description}
-  onChange={(e) => setDescription(e.target.value)}
-  className="input input-bordered w-full"
-/>
+          type="text"
+          placeholder="Enter product description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="input input-bordered w-full"
+        />
+        <input
+          type="text"
+          placeholder="WhatsApp number (e.g. 923001234567)"
+          value={whatsapp}
+          onChange={(e) => setWhatsapp(e.target.value)}
+          className="input input-bordered w-full"
+        />
+
         <button onClick={handleSubmit} className="btn btn-primary w-full">
           Upload Product
         </button>
@@ -144,12 +156,32 @@ const deleteProduct = async (id: string) => {
             <div>
               <p className="font-semibold">{p.name}</p>
               <p className="text-sm text-gray-600">Price: Rs {p.price}</p>
+              <p className="text-sm text-green-700">
+                {p.whatsapp && (
+                  <a
+                    href={`https://wa.me/${
+                      p.whatsapp
+                    }?text=Hi, I want to buy ${encodeURIComponent(p.name)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    📲 WhatsApp Link
+                  </a>
+                )}
+              </p>
             </div>
             <div className="flex gap-2">
-              <button className="btn btn-sm btn-secondary" onClick={() => setEditing(p)}>
+              <button
+                className="btn btn-sm btn-secondary"
+                onClick={() => setEditing(p)}
+              >
                 Edit
               </button>
-              <button className="btn btn-sm btn-error" onClick={() => deleteProduct(p.id)}>
+              <button
+                className="btn btn-sm btn-error"
+                onClick={() => deleteProduct(p.id)}
+              >
                 Delete
               </button>
             </div>
@@ -171,11 +203,25 @@ const deleteProduct = async (id: string) => {
             <input
               type="text"
               value={editing.price}
-              onChange={(e) => setEditing({ ...editing, price: e.target.value })}
+              onChange={(e) =>
+                setEditing({ ...editing, price: e.target.value })
+              }
               className="input input-bordered w-full"
             />
+            <input
+              type="text"
+              value={editing.whatsapp || ""}
+              onChange={(e) =>
+                setEditing({ ...editing, whatsapp: e.target.value })
+              }
+              className="input input-bordered w-full"
+              placeholder="Edit WhatsApp number"
+            />
             <div className="flex justify-end gap-2 pt-2">
-              <button className="btn btn-ghost" onClick={() => setEditing(null)}>
+              <button
+                className="btn btn-ghost"
+                onClick={() => setEditing(null)}
+              >
                 Cancel
               </button>
               <button
@@ -186,6 +232,7 @@ const deleteProduct = async (id: string) => {
                     .update({
                       name: editing.name,
                       price: editing.price,
+                      whatsapp: editing.whatsapp,
                     })
                     .eq("id", editing.id);
 

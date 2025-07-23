@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, price, image, description, user_id } = body;
+    const { name, price, image, description, user_id, whatsapp } = body;
 
     console.log("Received user_id:", user_id);
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data, error: insertError } = await supabaseAdmin.from("products").insert([
-      { name, price, image, description, user_id },
+      { name, price, image, description, user_id, whatsapp },
     ]);
 
     if (insertError) {

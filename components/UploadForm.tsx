@@ -11,14 +11,18 @@ type ResultType = {
 const HISTORY_KEY = "fasdeem_history";
 
 function saveToHistory(entry: ResultType) {
+  if (typeof window === "undefined") return;
+
   const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
   const updated = [entry, ...existing].slice(0, 10);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
 }
 
 function loadHistory(): ResultType[] {
+  if (typeof window === "undefined") return [];
   return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 }
+
 
 export default function UploadForm() {
   const [productName, setProductName] = useState("");

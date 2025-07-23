@@ -38,6 +38,14 @@ export default function Navbar() {
           Dashboard
         </Link>
 
+        <Link
+          href="/admin"
+          className="text-sm font-medium text-gray-700 hover:text-purple-600 transition"
+        >
+          Admin
+        </Link>
+
+
         {user ? (
           <>
             {user.user_metadata?.avatar_url && (

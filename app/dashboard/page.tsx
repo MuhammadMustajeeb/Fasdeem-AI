@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import UploadForm from "../../components/UploadForm";
-import DashboardCards from "@/components/DashboardCards";
 
 export default function Dashboard() {
   useEffect(() => {
@@ -77,10 +76,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* 📦 Dashboard Output Cards */}
-        {/* <section className="bg-white/5 backdrop-blur-xl text-white rounded-3xl shadow-2xl p-6 sm:p-10 border border-white/10">
-          <DashboardCards />
-        </section> */}
+        
       </div>
     </main>
   );

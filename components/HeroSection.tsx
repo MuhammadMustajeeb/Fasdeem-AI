@@ -51,6 +51,7 @@ export default function HeroSection() {
           </Link>
         </div>
 
+
         {/* Preview Image */}
         <div className="mt-14">
           <img

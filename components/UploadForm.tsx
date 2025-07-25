@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import posthog from 'posthog-js';
+
 
 type ResultType = {
   title: string;
@@ -38,6 +40,8 @@ export default function UploadForm() {
   const [lastPromptData, setLastPromptData] = useState<any>(null);
 
   const handleGenerate = async (customData?: any) => {
+      posthog.capture('gpt_generate_clicked');
+
     const data = customData ?? { name: productName, price, tone, length, language, category };
     if (!data.name || !data.price) return toast.error("Please fill in both fields");
 
@@ -64,6 +68,8 @@ export default function UploadForm() {
   };
 
   const handleCopy = () => {
+      posthog.capture('copy_to_clipboard');
+
     if (!result) return;
     const fullText = `${result.title}\n\n${result.description}\n\nTags: ${result.tags.join(", ")}`;
     navigator.clipboard.writeText(fullText.trim());
@@ -88,6 +94,8 @@ export default function UploadForm() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      posthog.capture('upload_clicked');
+
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
@@ -150,6 +158,7 @@ export default function UploadForm() {
       >
         {loading ? "⏳ Generating..." : "⚡ Generate Product Content"}
       </button>
+
 
       {/* 🧠 Result Display */}
       {loading && <div className="text-white/70 text-sm">Thinking... Just a sec 🚀</div>}

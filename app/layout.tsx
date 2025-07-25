@@ -4,11 +4,14 @@ import Sidebar from "../components/Sidebar";
 import { Toaster } from "react-hot-toast";
 import Footer from "../components/Footer";
 import { SupabaseProvider } from "@/components/SupabaseProvider"; // ✅ import provider
+import PostHogWrapper from "@/components/PostHogWrapper";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-gray-50">
+        <PostHogWrapper /> {/* ✅ PostHog wrapper for analytics */}
+
         <SupabaseProvider>
           <div className="flex min-h-screen flex-col sm:flex-row">
             {/* Sidebar */}

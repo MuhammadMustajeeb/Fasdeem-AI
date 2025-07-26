@@ -34,6 +34,7 @@ export default function UploadDemo() {
               alt="Product Preview"
               width={400}
               height={400}
+              loading="lazy"
               className="mx-auto rounded-xl border border-white/10 shadow-lg"
             />
             <div className="text-left">

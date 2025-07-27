@@ -13,14 +13,19 @@ export default function HeroSection() {
       <div className="container mx-auto px-4 text-center max-w-screen-xl">
         {/* Niches Badge Row */}
         <div className="flex flex-wrap justify-center gap-2 mb-6">
-          {["For Etsy Sellers", "Shopify Stores", "WhatsApp Businesses"].map((text, i) => (
-            <span
-              key={i}
-              className="text-xs md:text-sm px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white/90"
-            >
-              {text}
-            </span>
-          ))}
+          {["For Etsy Sellers", "Shopify Stores", "WhatsApp Businesses"].map(
+            (text, i) => (
+              <span
+                key={i}
+                className="text-xs md:text-sm px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white/90"
+              >
+                {text}
+              </span>
+            )
+          )}
+          <span className="text-xs md:text-sm px-4 py-1.5 rounded-full border border-purple-400/30 bg-purple-400/10 text-purple-300 font-medium animate-pulse">
+            🎁 Free for First 100 Users
+          </span>
         </div>
 
         {/* Main Heading */}
@@ -33,12 +38,14 @@ export default function HeroSection() {
 
         {/* Subheading */}
         <p className="mt-6 text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
-          Fasdeem AI writes emotional, high-converting product descriptions — in seconds. No writing skills or marketing background needed.
+          Fasdeem AI writes emotional, high-converting product descriptions — in
+          seconds. No writing skills or marketing background needed.
         </p>
 
         {/* Proof */}
         <p className="mt-4 text-sm text-gray-500">
-          Trusted by <span className="text-white font-semibold">1,200+</span> small shops, resellers, and solo entrepreneurs.
+          Trusted by <span className="text-white font-semibold">1,200+</span>{" "}
+          small shops, resellers, and solo entrepreneurs.
         </p>
 
         {/* Primary CTA */}
@@ -50,6 +57,11 @@ export default function HeroSection() {
             </button>
           </Link>
         </div>
+
+        {/* Guarantee Tag */}
+        <p className="mt-2 text-sm text-purple-600 font-medium">
+          ✅ 7-Day Launch Guarantee — Love it or forget it.
+        </p>
 
         {/* Mock Preview Image */}
         <div className="mt-14">
@@ -63,7 +75,8 @@ export default function HeroSection() {
 
         {/* FOMO Note */}
         <p className="mt-6 text-sm text-gray-500 italic">
-          💡 Top sellers are already using Fasdeem to boost conversions — don’t get left behind.
+          💡 Top sellers are already using Fasdeem to boost conversions — don’t
+          get left behind.
         </p>
       </div>
 

@@ -1,88 +1,61 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { supabase } from "@/lib/supabaseClient";
-
-// 🔄 Dynamically import UploadForm with a fallback loading placeholder
-const UploadForm = dynamic(() => import("@/components/UploadForm"), {
-  loading: () => (
-    <div className="text-center text-white/60 animate-pulse">
-      Loading Upload Form...
-    </div>
-  ),
-  ssr: false,
-});
+import { useState } from "react";
+import UploadForm from "@/components/UploadForm"; // Keep your generator logic
+import { UserCircle } from "lucide-react";
 
 export default function Dashboard() {
-  useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session) {
-        console.log("✅ Logged in user:", session.user);
-      } else {
-        console.log("❌ No session found");
-      }
-    };
-
-    getUser();
-  }, []);
+  const [user] = useState({ name: "Muhammad" }); // Replace with session user later
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white px-4 py-20 sm:py-28 overflow-hidden">
-      {/* ✨ Decorative Background Blobs */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-purple-700/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-100px] right-[-100px] w-[300px] h-[300px] bg-pink-500/20 rounded-full blur-[100px]" />
-      </div>
-
-      <div className="max-w-6xl mx-auto space-y-24 animate-fade-in">
-        {/* 🚀 Hero Section */}
-        <section className="relative text-center space-y-6">
-          <div className="absolute left-1/2 -top-10 -translate-x-1/2 w-[300px] sm:w-[500px] h-[200px] sm:h-[280px] bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-300 blur-[120px] opacity-20 animate-pulse rounded-full -z-10" />
-
-          <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-300 via-purple-400 to-pink-400 text-transparent bg-clip-text">
-            ✨ Fasdeem AI Dashboard
-          </h1>
-          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            Seamlessly create high-converting product content using AI. Just
-            upload, customize, and export.
-          </p>
-        </section>
-
-        {/* 🔄 3-Step Flow */}
-        <section className="flex flex-col sm:flex-row items-center justify-center gap-8 text-white/90">
-          {["Upload Product", "Customize Output", "Generate & Export"].map(
-            (step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-lg border-4 border-white shadow-xl">
-                  {index + 1}
-                </div>
-                <span className="mt-3 font-medium text-sm sm:text-base text-center">
-                  {step}
-                </span>
-              </div>
-            )
-          )}
-        </section>
-
-        {/* 📂 Upload Form Card */}
-        <section className="relative bg-[#0f0f0f] rounded-3xl p-6 sm:p-10 shadow-[0_10px_60px_rgba(255,255,255,0.05)] border border-white/10 overflow-hidden group transition-all duration-500">
-          <div className="absolute -top-14 -left-14 w-72 h-72 bg-gradient-to-tr from-purple-500 via-pink-500 to-yellow-400 opacity-20 rounded-full blur-3xl group-hover:opacity-30 transition duration-700"></div>
-          <div className="absolute inset-0 rounded-3xl border border-white/10 pointer-events-none z-10"></div>
-
-          <div className="relative z-20 space-y-8">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-center text-white/90">
-              📤 Upload Your Product
-            </h2>
-            <UploadForm />
+    <main className="min-h-screen bg-gray-50">
+      {/* 🔝 Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+          <h1 className="text-xl font-bold text-gray-900">Fasdeem Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600">Hi, {user.name}</span>
+            <UserCircle size={32} className="text-gray-400" />
           </div>
-        </section>
+        </div>
+      </header>
+
+      {/* 📦 Main Content */}
+      <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-lg p-6 flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold">Welcome back, {user.name} 👋</h2>
+            <p className="text-sm text-purple-100 mt-1">
+              Ready to generate high-converting product descriptions?
+            </p>
+          </div>
+          <img src="/illustration-ai.webp" alt="AI Illustration" className="h-20 hidden sm:block" />
+        </div>
+
+        {/* Upload Generator */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">⚡ Generate Product Descriptions</h3>
+          <UploadForm /> {/* Your existing generator form */}
+        </div>
+
+        {/* History Section */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">🕘 Recent Generations</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[1, 2, 3].map((_, i) => (
+              <div key={i} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                <h4 className="font-semibold text-gray-800">Sample Product {i+1}</h4>
+                <p className="text-gray-600 text-sm mt-1 line-clamp-2">
+                  This is an example description generated by Fasdeem AI. Real entries will appear here.
+                </p>
+                <button className="mt-3 text-purple-600 text-sm font-medium hover:underline">
+                  Copy to Clipboard
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </main>
   );
 }
-  

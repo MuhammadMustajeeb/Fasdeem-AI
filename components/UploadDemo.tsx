@@ -1,61 +1,62 @@
 "use client";
-
-import { motion } from "framer-motion";
-import { UploadCloud, CheckCircle } from "lucide-react";
-import Image from "next/image";
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 export default function UploadDemo() {
+  const [product, setProduct] = useState("");
+  const [generated, setGenerated] = useState("");
+
+  const handleGenerate = () => {
+    if (!product.trim()) return;
+    setGenerated(
+      `✨ ${product} — Turn heads with this amazing item! Perfect for anyone looking to add style, comfort, and value to their life. Order now and experience the difference.`
+    );
+  };
+
   return (
-    <section className="py-24 bg-gradient-to-b from-black via-[#0b0b0b] to-[#121212] text-white">
-      <div className="max-w-6xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold mb-8">See It In Action</h2>
-        <p className="text-gray-400 mb-14 max-w-2xl mx-auto">
-          Instantly generate scroll-stopping product listings. Just upload and go!
-        </p>
+    <div className="text-center">
+      {/* Heading */}
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        Try Fasdeem Right Here 🎯
+      </h2>
+      <p className="text-gray-600 max-w-xl mx-auto mb-8">
+        Type a product name and see how Fasdeem instantly creates a scroll-stopping description.
+      </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl shadow-xl"
+      {/* Input Box */}
+      <div className="max-w-md mx-auto flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="e.g. Handmade Leather Wallet"
+          className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+          value={product}
+          onChange={(e) => setProduct(e.target.value)}
+        />
+        <button
+          onClick={handleGenerate}
+          className="px-5 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:scale-105 transition flex items-center gap-2"
         >
-          {/* Upload Box */}
-          <div className="border-dashed border-2 border-purple-600 py-10 rounded-xl mb-10 cursor-pointer hover:bg-purple-950/20 transition">
-            <UploadCloud className="mx-auto mb-4 w-10 h-10 text-purple-400" />
-            <p className="text-lg font-medium">Drag & Drop Product Image</p>
-            <p className="text-sm text-gray-400">or click to select</p>
-          </div>
-
-          {/* Preview Mock */}
-          <div className="grid md:grid-cols-2 gap-6 items-center">
-            <Image
-              src="/mock-product.webp"
-              alt="Product Preview"
-              width={400}
-              height={400}
-              loading="lazy"
-              className="mx-auto rounded-xl border border-white/10 shadow-lg"
-            />
-            <div className="text-left">
-              <h3 className="text-2xl font-semibold mb-2">Generated Listing:</h3>
-              <p className="text-gray-300 mb-4">
-                Introducing our elegant black wireless headphones — 30-hour battery, noise cancellation, and ergonomic design. Perfect for travel or work.
-              </p>
-              <CheckCircle className="text-green-400 inline w-5 h-5 mr-1" />
-              <span className="text-sm">Tone: Professional</span><br />
-              <CheckCircle className="text-green-400 inline w-5 h-5 mr-1" />
-              <span className="text-sm">Language: English</span>
-
-              <div className="mt-6">
-                <button className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-xl text-sm font-semibold">
-                  Export to WhatsApp / CSV
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          Generate <ArrowRight size={16} />
+        </button>
       </div>
-    </section>
+
+      {/* Result Preview */}
+      {generated && (
+        <div className="mt-6 max-w-xl mx-auto text-left bg-white p-5 border border-gray-200 rounded-xl shadow-sm">
+          <p className="text-gray-700 text-sm whitespace-pre-line">{generated}</p>
+        </div>
+      )}
+
+      {/* Placeholder Image Preview */}
+      {!generated && (
+        <div className="mt-6 max-w-xl mx-auto">
+          <img
+            src="/placeholder-preview.webp"
+            alt="Product demo placeholder"
+            className="rounded-xl border border-gray-200 shadow-sm"
+          />
+        </div>
+      )}
+    </div>
   );
 }

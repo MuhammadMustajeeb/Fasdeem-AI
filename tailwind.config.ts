@@ -4,8 +4,13 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  theme: {
-    extend: {},
+  /* tailwind.config.js */
+theme: {
+  extend: {
+    fontFamily: {
+      sans: ["Inter", "sans-serif"], /* Clean SaaS font */
+    },
   },
+},
   plugins: [],
 };

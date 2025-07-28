@@ -1,50 +1,33 @@
-// components/homepage/HowItWorks.tsx
 "use client";
-
-import { UploadCloud, SlidersHorizontal, Send } from "lucide-react";
-import { motion } from "framer-motion";
-
-const steps = [
-  {
-    title: "Upload Your Product Image",
-    description: "Just drag & drop or select your product image — no logins needed.",
-    icon: <UploadCloud className="w-8 h-8 text-purple-500" />,
-  },
-  {
-    title: "Customize Style & Tone",
-    description: "Select tone, length, language — preview real-time results.",
-    icon: <SlidersHorizontal className="w-8 h-8 text-yellow-400" />,
-  },
-  {
-    title: "Export or Share Instantly",
-    description: "Copy to WhatsApp, download CSV, or publish to your store.",
-    icon: <Send className="w-8 h-8 text-green-400" />,
-  },
-];
+import { Upload, Type, Share } from "lucide-react";
 
 export default function HowItWorks() {
-  return (
-    <section className="py-24 bg-[#090909] text-white">
-      <div className="max-w-5xl mx-auto px-4 text-center">
-        <h2 className="text-4xl font-bold mb-12">How Fasdeem AI Works</h2>
+  const steps = [
+    { icon: <Upload size={28} className="text-purple-500" />, title: "1. Upload Product", desc: "Add your product name, price, and image in seconds." },
+    { icon: <Type size={28} className="text-pink-500" />, title: "2. AI Writes Copy", desc: "Fasdeem instantly generates emotional, scroll-stopping descriptions." },
+    { icon: <Share size={28} className="text-green-500" />, title: "3. Share & Sell", desc: "Export to WhatsApp, CSV, or copy directly into your store." },
+  ];
 
-        <div className="grid md:grid-cols-3 gap-10">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-lg hover:shadow-purple-500/20 hover:border-purple-500 transition-all duration-300"
-            >
-              <div className="mb-4 flex justify-center">{step.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-              <p className="text-sm text-gray-300">{step.description}</p>
-            </motion.div>
-          ))}
-        </div>
+  return (
+    <div className="text-center">
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        How It Works in <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">3 Simple Steps</span>
+      </h2>
+      <p className="text-gray-600 max-w-xl mx-auto mb-10">
+        No writing, no guesswork — just upload, generate, and share.
+      </p>
+
+      <div className="grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {steps.map((step, i) => (
+          <div key={i} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-center text-center">
+            <div className="w-12 h-12 flex items-center justify-center bg-purple-50 rounded-full mb-4">
+              {step.icon}
+            </div>
+            <h3 className="font-semibold text-gray-900 text-lg">{step.title}</h3>
+            <p className="text-gray-600 text-sm mt-2">{step.desc}</p>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }

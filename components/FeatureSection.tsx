@@ -1,44 +1,30 @@
-import { CheckCircle, Sparkles, Share2 } from "lucide-react";
+"use client";
+import { CheckCircle } from "lucide-react";
 
 export default function FeaturesSection() {
   const features = [
-    {
-      icon: <Sparkles className="w-6 h-6 text-purple-500" />,
-      title: "Instant Clarity",
-      description: "No fluff — just copy that sells in your tone & language.",
-    },
-    {
-      icon: <CheckCircle className="w-6 h-6 text-green-500" />,
-      title: "Ready to Share",
-      description: "Export to WhatsApp, Etsy, Shopify, or save as CSV.",
-    },
-    {
-      icon: <Share2 className="w-6 h-6 text-blue-500" />,
-      title: "Grows With You",
-      description: "Save, rephrase, and share anytime. No logins needed.",
-    },
+    "AI-Powered Emotional Copywriting",
+    "One-Click WhatsApp Export",
+    "Supports English & Urdu",
+    "Save History & Re-Generate Instantly",
   ];
 
   return (
-    <section className="py-20 bg-[#0f0f0f] text-white">
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-10">
-          Built to Sell, Not Just Write
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/10 hover:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
-            >
-              <div className="mb-4 flex justify-center">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm text-gray-300">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+    <div className="text-center">
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        Powerful Features, <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">Built for You</span>
+      </h2>
+      <p className="text-gray-600 max-w-xl mx-auto mb-10">
+        Fasdeem combines simplicity with powerful AI to help small business owners create sales-driven product descriptions in seconds.
+      </p>
+      <div className="grid sm:grid-cols-2 md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
+        {features.map((feature) => (
+          <div key={feature} className="flex gap-3 items-start p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition">
+            <CheckCircle className="text-purple-500 mt-1" size={22} />
+            <span className="text-gray-800 font-medium">{feature}</span>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }

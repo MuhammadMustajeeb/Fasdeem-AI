@@ -1,20 +1,14 @@
 "use client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import posthog from 'posthog-js';
+import posthog from "posthog-js";
+import { Upload, Copy, RefreshCw, FileDown, MessageCircle } from "lucide-react";
 
-
-type ResultType = {
-  title: string;
-  description: string;
-  tags: string[];
-};
-
+type ResultType = { title: string; description: string; tags: string[] };
 const HISTORY_KEY = "fasdeem_history";
 
 function saveToHistory(entry: ResultType) {
   if (typeof window === "undefined") return;
-
   const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
   const updated = [entry, ...existing].slice(0, 10);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
@@ -24,7 +18,6 @@ function loadHistory(): ResultType[] {
   if (typeof window === "undefined") return [];
   return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 }
-
 
 export default function UploadForm() {
   const [productName, setProductName] = useState("");
@@ -39,12 +32,11 @@ export default function UploadForm() {
   const [result, setResult] = useState<ResultType | null>(null);
   const [lastPromptData, setLastPromptData] = useState<any>(null);
 
+  // ---- Handlers (same logic as your original) ----
   const handleGenerate = async (customData?: any) => {
-      posthog.capture('gpt_generate_clicked');
-
+    posthog.capture("gpt_generate_clicked");
     const data = customData ?? { name: productName, price, tone, length, language, category };
-    if (!data.name || !data.price) return toast.error("Please fill in both fields");
-
+    if (!data.name || !data.price) return toast.error("⚠️ Please fill in both fields");
     setLoading(true);
     setResult(null);
 
@@ -68,11 +60,10 @@ export default function UploadForm() {
   };
 
   const handleCopy = () => {
-      posthog.capture('copy_to_clipboard');
-
+    posthog.capture("copy_to_clipboard");
     if (!result) return;
-    const fullText = `${result.title}\n\n${result.description}\n\nTags: ${result.tags.join(", ")}`;
-    navigator.clipboard.writeText(fullText.trim());
+    const text = `${result.title}\n\n${result.description}\n\nTags: ${result.tags.join(", ")}`;
+    navigator.clipboard.writeText(text.trim());
     toast.success("📋 Copied to clipboard!");
   };
 
@@ -94,8 +85,7 @@ export default function UploadForm() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      posthog.capture('upload_clicked');
-
+    posthog.capture("upload_clicked");
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
@@ -104,35 +94,34 @@ export default function UploadForm() {
   };
 
   return (
-    <div className="space-y-10">
-      {/* 🖼️ Upload Box */}
-      <label className="border-2 border-dashed border-white/20 bg-white/5 hover:bg-white/10 transition-all backdrop-blur-sm flex flex-col items-center justify-center rounded-xl p-6 text-center text-sm cursor-pointer shadow-inner">
-        <span className="text-indigo-200 font-semibold group-hover:text-indigo-100">📤 Drag & drop or click to upload</span>
-        <span className="text-white/50">JPG or PNG, max 10MB</span>
+    <div className="space-y-8">
+      {/* 🖼 Image Upload */}
+      <label className="border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 transition-all rounded-xl flex flex-col items-center justify-center text-center p-8 cursor-pointer">
+        <Upload className="w-8 h-8 text-gray-500 mb-2" />
+        <span className="text-gray-700 font-medium">📤 Drag & drop or click to upload</span>
+        <span className="text-gray-400 text-sm">JPG or PNG, max 10MB</span>
         <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
       </label>
 
-      {/* 🧾 Input Fields */}
+      {/* 🔤 Input Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <input
           type="text"
-          placeholder="Product Name"
-          className="bg-white/10 border border-white/10 p-3 rounded-xl text-sm placeholder-white/50 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-
+          placeholder="✨ Product Name"
+          className="border border-gray-300 p-4 rounded-lg text-gray-800 focus:ring-2 focus:ring-purple-500 focus:outline-none"
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
         />
         <input
           type="number"
-          placeholder="Price"
-          className="bg-white/10 border border-white/10 p-3 rounded-xl text-sm placeholder-white/50 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-
+          placeholder="💰 Price"
+          className="border border-gray-300 p-4 rounded-lg text-gray-800 focus:ring-2 focus:ring-purple-500 focus:outline-none"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
       </div>
 
-      {/* 🎛️ Select Fields */}
+      {/* 🔽 Dropdowns */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[{ val: tone, setter: setTone, opts: ["Friendly", "Professional", "Persuasive"] },
           { val: length, setter: setLength, opts: ["Short", "Medium", "Long"] },
@@ -143,73 +132,88 @@ export default function UploadForm() {
             key={idx}
             value={val}
             onChange={(e) => setter(e.target.value)}
-            className="bg-white/10 text-white/80 p-2 rounded-xl border border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-
+            className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-purple-500 focus:outline-none"
           >
-            {opts.map(opt => <option key={opt} className="text-black">{opt}</option>)}
+            {opts.map(opt => <option key={opt}>{opt}</option>)}
           </select>
         ))}
       </div>
 
-      {/* 🚀 Generate Button */}
+      {/* ⚡ Generate Button */}
       <button
         onClick={() => handleGenerate()}
-        className="w-full bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg transition-all duration-200 hover:scale-105"
+        className="w-full bg-gradient-to-br from-purple-500 to-pink-500 hover:opacity-90 text-white font-semibold py-4 rounded-xl shadow-lg transition-all"
       >
-        {loading ? "⏳ Generating..." : "⚡ Generate Product Content"}
+        {loading ? "⏳ Generating..." : "⚡ Generate AI Content"}
       </button>
 
-
-      {/* 🧠 Result Display */}
-      {loading && <div className="text-white/70 text-sm">Thinking... Just a sec 🚀</div>}
-      {!loading && !result && (
-        <p className="text-white/50 text-sm text-center">👇 Your product content will appear here after generation.</p>
-      )}
+      {/* 🖥 Result */}
+      {loading && <div className="text-gray-500 text-center text-lg">Thinking... 🚀</div>}
+      {!loading && !result && <p className="text-gray-400 text-center text-sm">👇 Your AI-generated content will appear here.</p>}
 
       {result && (
-        <div className="bg-white/10 border border-white/20 p-6 rounded-2xl space-y-4 text-white shadow-inner">
+        <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-md space-y-4">
           <div className="flex gap-4 items-start">
-            {imageUrl && <img src={imageUrl} alt="Preview" className="w-24 h-24 object-cover rounded-lg border shadow" />}
+            {imageUrl && <img src={imageUrl} alt="Preview" className="w-28 h-28 object-cover rounded-lg border" />}
             <div className="space-y-2">
-              <h2 className="text-xl font-bold">{result.title}</h2>
-              <p>{result.description}</p>
+              <h2 className="text-xl font-bold text-gray-900">{result.title}</h2>
+              <p className="text-gray-700">{result.description}</p>
               <div className="flex flex-wrap gap-2">
                 {result.tags.map((tag, i) => (
-                  <span key={i} className="bg-indigo-500/30 text-indigo-100 px-2 py-1 rounded-full text-xs">
+                  <span key={i} className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs">
                     #{tag}
                   </span>
                 ))}
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <button onClick={handleCopy} className="px-4 py-2 bg-black/80 hover:bg-black text-white rounded">📋 Copy</button>
-            <button onClick={handleWhatsAppExport} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">📤 WhatsApp</button>
-            <button onClick={handleExportCSV} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">📄 Export CSV</button>
-            <button onClick={() => handleGenerate(lastPromptData)} className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded">🔁 Re-generate</button>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3">
+            <button onClick={handleCopy} className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg">
+              <Copy size={16} /> Copy
+            </button>
+            <button onClick={handleWhatsAppExport} className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg">
+              <MessageCircle size={16} /> WhatsApp
+            </button>
+            <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+              <FileDown size={16} /> Export CSV
+            </button>
+            <button onClick={() => handleGenerate(lastPromptData)} className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black rounded-lg">
+              <RefreshCw size={16} /> Re-generate
+            </button>
           </div>
         </div>
       )}
 
-      {/* 🕘 History */}
-      {!loading && loadHistory().length > 0 && (
-        <div className="pt-8 space-y-4">
-          <h3 className="text-white/80 text-sm font-medium">Recent Generations</h3>
-          <div className="grid gap-3">
-            {loadHistory().map((item, idx) => (
-              <div key={idx} className="p-4 bg-white/10 border border-white/10 rounded-xl space-y-1 text-white">
-                <p className="font-semibold">{item.title}</p>
-                <p className="text-sm text-white/70 line-clamp-2">{item.description}</p>
-                <div className="flex flex-wrap gap-1 text-xs text-white/50">
-                  {item.tags.map((t, i) => (
-                    <span key={i} className="bg-white/10 px-2 py-0.5 rounded">#{t}</span>
-                  ))}
-                </div>
-              </div>
+      {/* 🕘 Recent Generations */}
+{!loading && loadHistory().length > 0 && (
+  <div className="pt-8 space-y-4">
+    <h3 className="text-gray-700 text-sm font-semibold">🕘 Recent Generations</h3>
+    <div className="flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pb-2">
+      {loadHistory().map((item, idx) => (
+        <div
+          key={idx}
+          className="min-w-[280px] flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition"
+        >
+          <h4 className="font-semibold text-gray-900 truncate">{item.title}</h4>
+          <p className="text-sm text-gray-600 line-clamp-3 mt-1">{item.description}</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {item.tags.slice(0, 2).map((tag, i) => (
+              <span
+                key={i}
+                className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs"
+              >
+                #{tag}
+              </span>
             ))}
           </div>
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

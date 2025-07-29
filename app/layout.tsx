@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SupabaseProvider>
           <div className="flex min-h-screen flex-col sm:flex-row">
             {/* Sidebar */}
-            <Sidebar />
+            {/* <Sidebar /> */}
 
             {/* Main Content */}
             <div className="flex flex-1 flex-col">

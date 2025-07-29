@@ -2,12 +2,14 @@
 import { useState } from "react";
 import UploadForm from "@/components/UploadForm"; // Keep your generator logic
 import { UserCircle } from "lucide-react";
+import FeedbackModal from "@/components/FeedbackModel";
 
 export default function Dashboard() {
-  const [user] = useState({ name: "Muhammad" }); // Replace with session user later
+  const [user] = useState({ name: "User" }); // Replace with session user later
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <>
+      <main className="min-h-screen bg-gray-50">
       {/* 🔝 Header */}
       <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
@@ -57,5 +59,7 @@ export default function Dashboard() {
         </div>
       </div>
     </main>
+    <FeedbackModal />
+    </>
   );
 }

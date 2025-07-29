@@ -64,9 +64,9 @@ export default function Sidebar() {
         `}
       >
         {/* 🚀 Brand Header + Profile */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           {!collapsed && (
-            <h2 className="text-xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight">
+            <h2 className="text-xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight">
               Fasdeem
             </h2>
           )}
@@ -121,12 +121,12 @@ export default function Sidebar() {
                 className={`
                   group relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all
                   ${isActive 
-                    ? "bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-sm"
+                    ? "bg-purple-50 text-purple-700 border border-purple-200 shadow-sm"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}
                   ${collapsed ? "justify-center" : ""}
                 `}
               >
-                <span className={`transition ${isActive ? "text-indigo-500" : ""}`}>
+                <span className={`transition ${isActive ? "text-purple-500" : ""}`}>
                   {item.icon}
                 </span>
                 {!collapsed && <span>{item.name}</span>}

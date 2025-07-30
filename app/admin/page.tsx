@@ -98,7 +98,7 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+    <div className="max-w-2xl mx-auto px-4 py-12 pt-24 space-y-8">
       <h1 className="text-2xl font-bold">📦 Admin Product Uploader</h1>
 
       {/* Upload Form */}

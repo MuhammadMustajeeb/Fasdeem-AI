@@ -63,7 +63,7 @@ export default function Navbar() {
           </Link>
 
           {/* Upgrade CTA */}
-          <Link href="/pricing">
+          <Link href="/pricing" className="hidden md:block">
             <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:scale-105 transition shadow">
               🚀 Upgrade
             </button>
@@ -131,13 +131,13 @@ export default function Navbar() {
 
       {/* ✅ Mobile Drawer */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 md:hidden">
-          <div className="absolute top-0 right-0 w-64 h-full bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-xl p-6 flex flex-col">
+        <div className="fixed inset-0 bg-black/60 z-[998] md:hidden">
+          <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg py-2 z-[999]">
             <button onClick={() => setMenuOpen(false)} className="self-end text-gray-500 hover:text-gray-700">
               <X size={24} />
             </button>
 
-            <nav className="mt-6 flex flex-col gap-4 text-gray-700 dark:text-gray-200">
+            <nav className="mt-6 flex flex-col gap-4 mx-2 text-gray-700 dark:text-gray-200">
               <Link href="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
               <Link href="/admin" onClick={() => setMenuOpen(false)}>Admin</Link>
               <Link href="/pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>

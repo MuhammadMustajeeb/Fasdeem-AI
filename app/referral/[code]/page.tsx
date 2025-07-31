@@ -1,26 +1,23 @@
 // app/referral/[code]/page.tsx
-import { supabase } from "@/lib/supabaseClient";
-import { redirect } from "next/navigation";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface ReferralPageProps {
-  params: { code: string }; // ✅ Correct typing
+  params: { code: string };
 }
 
-export default async function ReferralPage({ params }: ReferralPageProps) {
+export default function ReferralLanding({ params }: ReferralPageProps) {
   const { code } = params;
+  const router = useRouter();
 
-  // ✅ Check if referral code exists (optional validation)
-  const { data: inviter, error } = await supabase
-    .from("auth.users")
-    .select("id")
-    .eq("id", code)
-    .single();
+  useEffect(() => {
+    // Save referral code to localStorage (to be used at signup)
+    localStorage.setItem("referral_code", code);
 
-  if (!inviter || error) {
-    // If invalid code → redirect or show error page
-    redirect("/signup?error=invalid-referral");
-  }
+    // Redirect to signup page
+    router.push("/signup");
+  }, [code, router]);
 
-  // ✅ Redirect user to signup page with referral code in query params
-  redirect(`/signup?ref=${code}`);
+  return <p className="text-center mt-10">Redirecting to signup...</p>;
 }

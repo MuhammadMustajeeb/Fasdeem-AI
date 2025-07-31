@@ -1,15 +1,14 @@
-// app/signup/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [referralCode, setReferralCode] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const code = localStorage.getItem("referral_code");
@@ -17,32 +16,30 @@ export default function SignupPage() {
   }, []);
 
   const handleSignup = async () => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
+    if (signUpError) return toast.error(signUpError.message);
 
-    // If referral code exists, save in referrals table
-    if (referralCode && data.user) {
-      const { error: refErr } = await supabase.from("referrals").insert({
-        inviter_id: referralCode, // referral code is inviter's ID
-        invitee_id: data.user.id,
+    const inviteeId = signUpData.user?.id;
+    if (inviteeId && referralCode) {
+      // Save referral record in Supabase
+      await supabase.from("referrals").insert({
+        inviter_id: referralCode,
+        invitee_id: inviteeId,
         referral_code: referralCode,
       });
-
-      if (refErr) console.error("Referral save error:", refErr.message);
-      else toast.success("Referral tracked!");
+      localStorage.removeItem("referral_code");
     }
 
-    toast.success("Signup successful! Check your email to confirm.");
-    localStorage.removeItem("referral_code");
+    toast.success("Signed up successfully!");
     router.push("/dashboard");
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow space-y-4">
+    <div className="max-w-md mx-auto py-12 space-y-6">
       <h1 className="text-2xl font-bold">Sign Up</h1>
       <input
         type="email"
@@ -58,17 +55,15 @@ export default function SignupPage() {
         onChange={(e) => setPassword(e.target.value)}
         className="w-full p-2 border rounded"
       />
+      {referralCode && (
+        <p className="text-sm text-gray-500">Referral applied ✅</p>
+      )}
       <button
         onClick={handleSignup}
-        className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
+        className="w-full bg-purple-600 text-white py-2 rounded"
       >
         Sign Up
       </button>
-      {referralCode && (
-        <p className="text-sm text-gray-500 text-center">
-          🎁 Referral applied!
-        </p>
-      )}
     </div>
   );
 }

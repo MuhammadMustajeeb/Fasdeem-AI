@@ -4,8 +4,8 @@ import { useState } from "react";
 
 export default function ReferralPage() {
   const session = useSession();
-  const referralLink = session?.user 
-    ? `https://fasdeem.com/referral/${session.user.id}` 
+  const referralLink = session?.user
+    ? `https://fasdeem.com/referral/${session.user.id}`
     : "";
   const [copied, setCopied] = useState(false);
 

@@ -11,7 +11,7 @@ export default function ReferralCTA() {
         Share Fasdeem AI with other sellers and unlock premium features when they sign up!
       </p>
       <div className="mt-6">
-        <Link href="/referral">
+        <Link href="/referral/invite">
           <button className="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold shadow hover:bg-gray-50 transition">
             Invite Friends → 
           </button>

@@ -3,15 +3,14 @@
 import { useSession } from "@supabase/auth-helpers-react";
 import { useState, useMemo } from "react";
 
-export default function ReferralPage() {
+export default function InvitePage() {
   const session = useSession();
+  const [copied, setCopied] = useState(false);
 
   const referralLink = useMemo(() => {
     if (!session?.user?.id) return "";
     return `https://fasdeem.com/referral/${encodeURIComponent(session.user.id)}`;
   }, [session?.user?.id]);
-
-  const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     if (!referralLink) return;

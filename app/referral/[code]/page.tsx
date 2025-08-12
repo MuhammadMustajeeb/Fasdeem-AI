@@ -10,10 +10,7 @@ export default function ReferralLanding() {
 
   useEffect(() => {
     if (code) {
-      // Save referral code in localStorage
-      localStorage.setItem("referral_code", code);
-
-      // Redirect to signup page
+      localStorage.setItem("referral_code", decodeURIComponent(code));
       router.push("/signup");
     }
   }, [code, router]);

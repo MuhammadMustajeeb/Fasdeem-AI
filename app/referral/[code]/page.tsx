@@ -1,27 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
-// ✅ Proper typing for Next.js App Router params
-interface ReferralLandingProps {
-  params: {
-    code: string;
-  };
-}
-
-export default function ReferralLanding({ params }: ReferralLandingProps) {
+export default function ReferralLanding() {
   const router = useRouter();
+  const params = useParams();
+  const code = params?.code as string;
 
   useEffect(() => {
-    if (params?.code) {
+    if (code) {
       // Save referral code in localStorage
-      localStorage.setItem("referral_code", params.code);
+      localStorage.setItem("referral_code", code);
 
       // Redirect to signup page
       router.push("/signup");
     }
-  }, [params?.code, router]);
+  }, [code, router]);
 
   return <p className="text-center mt-10">Redirecting to signup...</p>;
 }

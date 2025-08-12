@@ -9,7 +9,7 @@ export default function InvitePage() {
 
   const referralLink = useMemo(() => {
     if (!session?.user?.id) return "";
-    return `https://fasdeem.com/referral/${encodeURIComponent(session.user.id)}`;
+    return `${window.location.origin}/referral/${encodeURIComponent(session.user.id)}`;
   }, [session?.user?.id]);
 
   const handleCopy = async () => {

@@ -25,7 +25,7 @@ export default function Footer() {
           <Link href="/terms" className="hover:text-gray-900 transition">
             Terms
           </Link>
-          <Link href="/referral" className="hover:text-gray-900 transition">
+          <Link href="/invite" className="hover:text-gray-900 transition">
             Referral
           </Link>
         </div>

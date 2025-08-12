@@ -1,56 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function SignupPage() {
+export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [referralCode, setReferralCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Check local storage for referral code
-  useEffect(() => {
-    const code = localStorage.getItem("referral_code");
-    if (code) setReferralCode(code);
-  }, []);
-
-  // ✅ Handle Signup
-  const handleSignup = async () => {
+  // ✅ Handle Login
+  const handleLogin = async () => {
     if (!email || !password) {
-      toast.error("Please fill in all fields.");
+      toast.error("Please enter both email and password.");
       return;
     }
 
     setLoading(true);
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (signUpError) {
+    if (error) {
       setLoading(false);
-      return toast.error(signUpError.message);
-    }
-
-    const inviteeId = signUpData.user?.id;
-
-    // ✅ Save referral record if applicable
-    if (inviteeId && referralCode) {
-      await supabase.from("referrals").insert({
-        inviter_id: referralCode,
-        invitee_id: inviteeId,
-        referral_code: referralCode,
-      });
-      localStorage.removeItem("referral_code");
+      return toast.error(error.message);
     }
 
     setLoading(false);
-    toast.success("Signed up successfully!");
+    toast.success("Logged in successfully!");
     router.push("/dashboard");
   };
 
@@ -59,9 +40,9 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
         {/* Heading */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800">Create your account</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome back</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Get started with Fasdeem in just a few seconds.
+            Log in to continue to Fasdeem.
           </p>
         </div>
 
@@ -77,20 +58,14 @@ export default function SignupPage() {
 
           <input
             type="password"
-            placeholder="Password (min 6 chars)"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
 
-          {referralCode && (
-            <div className="text-sm text-green-600">
-              Referral code applied ✅
-            </div>
-          )}
-
           <button
-            onClick={handleSignup}
+            onClick={handleLogin}
             disabled={loading}
             className={`w-full py-3 rounded-lg text-white font-semibold transition ${
               loading
@@ -98,18 +73,18 @@ export default function SignupPage() {
                 : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </div>
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-4">
-          Already have an account?{" "}
+          Don’t have an account?{" "}
           <a
-            href="/login"
+            href="/signup"
             className="text-purple-600 hover:underline"
           >
-            Log in
+            Sign up
           </a>
         </p>
       </div>

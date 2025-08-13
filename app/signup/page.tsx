@@ -12,13 +12,12 @@ export default function SignupPage() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Check local storage for referral code
+  // Check local storage for referral code
   useEffect(() => {
     const code = localStorage.getItem("referral_code");
     if (code) setReferralCode(code);
   }, []);
 
-  // ✅ Handle Signup
   const handleSignup = async () => {
     if (!email || !password) {
       toast.error("Please fill in all fields.");
@@ -27,6 +26,7 @@ export default function SignupPage() {
 
     setLoading(true);
 
+    // Create user
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -39,14 +39,20 @@ export default function SignupPage() {
 
     const inviteeId = signUpData.user?.id;
 
-    // ✅ Save referral record if applicable
-    if (inviteeId && referralCode) {
-      await supabase.from("referrals").insert({
-        inviter_id: referralCode,
-        invitee_id: inviteeId,
-        referral_code: referralCode,
-      });
-      localStorage.removeItem("referral_code");
+    if (inviteeId) {
+      // Insert into profiles table
+      await supabase.from("profiles").insert({ id: inviteeId });
+
+      // Save referral record if applicable
+      if (referralCode) {
+        await supabase.from("referrals").insert({
+          inviter_id: referralCode,
+          invitee_id: inviteeId,
+          referral_code: referralCode,
+          status: "pending"
+        });
+        localStorage.removeItem("referral_code");
+      }
     }
 
     setLoading(false);
@@ -57,7 +63,6 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
-        {/* Heading */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-800">Create your account</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -65,7 +70,6 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* Form */}
         <div className="space-y-4">
           <input
             type="email"
@@ -102,13 +106,9 @@ export default function SignupPage() {
           </button>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-4">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-purple-600 hover:underline"
-          >
+          <a href="/login" className="text-purple-600 hover:underline">
             Log in
           </a>
         </p>

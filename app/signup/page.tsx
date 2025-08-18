@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Link } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();

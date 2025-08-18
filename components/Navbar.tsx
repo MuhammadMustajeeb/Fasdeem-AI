@@ -114,8 +114,8 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <Link href="/signin" className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
-              Sign In
+            <Link href="/login" className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+              Log in
             </Link>
           )}
         </nav>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import UploadForm from "@/components/UploadForm"; // Keep your generator logic
 import { UserCircle } from "lucide-react";
 import FeedbackModal from "@/components/FeedbackModel";
+import Testimonials from "@/components/Testimonials";
 
 export default function Dashboard() {
   const [user] = useState({ name: "User" }); // Replace with session user later
@@ -41,7 +42,7 @@ export default function Dashboard() {
         </div>
 
         {/* History Section */}
-        <div>
+        {/* <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-4">🕘 Recent Generations</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {[1, 2, 3].map((_, i) => (
@@ -56,8 +57,9 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
+      <Testimonials />
     </main>
     <FeedbackModal />
     </>

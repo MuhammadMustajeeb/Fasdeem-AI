@@ -16,14 +16,23 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Fetch current user
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
-    getUser();
-  }, []);
+  // Fetch current user and listen for changes
+useEffect(() => {
+  const getUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
+  getUser();
+
+  const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+
+  return () => {
+    subscription?.subscription.unsubscribe();
+  };
+}, []);
+
 
   // Dark mode toggle
   useEffect(() => {

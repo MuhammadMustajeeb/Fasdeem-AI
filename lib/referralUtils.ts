@@ -8,7 +8,16 @@ export async function markReferralAsConverted(currentUserId: string) {
     .eq("invitee_id", currentUserId)
     .single();
 
-  if (error || !referral || referral.status === "converted") return;
+  if (error || !referral) {
+  console.log("No referral found for user:", currentUserId);
+  return;
+}
+
+if (referral.status === "converted") {
+  console.log("Referral already converted for:", currentUserId);
+  return;
+}
+
 
   const inviterId = referral.inviter_id;
 

@@ -67,6 +67,16 @@ export default function UploadForm() {
       setLastPromptData(data);
       toast.success("✅ Product content generated!");
 
+      // Save generation in DB
+      const { data: userData } = await supabase.auth.getUser();
+      const currentUserId = userData?.user?.id;
+      if (currentUserId) {
+        await supabase.from("generations").insert({
+          user_id: currentUserId,
+          created_at: new Date(),
+        });
+      }
+
       // 🆕 Trigger referral conversion if this is the first generation
       const alreadyGenerated = await hasGeneratedBefore();
       if (!alreadyGenerated) {

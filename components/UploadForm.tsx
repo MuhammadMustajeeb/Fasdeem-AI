@@ -1,28 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import posthog from "posthog-js";
 import { Upload, Copy, RefreshCw, FileDown, MessageCircle } from "lucide-react";
+import { saveHistory, loadHistory, ResultType } from "@/lib/history"; // ✅ import correctly
 import {
   hasGeneratedBefore,
   markReferralAsConverted,
 } from "@/lib/referralUtils"; // Adjust import based on your project structure
 import { supabase } from "@/lib/supabaseClient";
 
-type ResultType = { title: string; description: string; tags: string[] };
-const HISTORY_KEY = "fasdeem_history";
-
-function saveToHistory(entry: ResultType) {
-  if (typeof window === "undefined") return;
-  const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-  const updated = [entry, ...existing].slice(0, 10);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-}
-
-function loadHistory(): ResultType[] {
-  if (typeof window === "undefined") return [];
-  return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-}
 
 export default function UploadForm() {
   const [productName, setProductName] = useState("");
@@ -36,6 +23,7 @@ export default function UploadForm() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultType | null>(null);
   const [lastPromptData, setLastPromptData] = useState<any>(null);
+  const [userHistory, userSetHistory] = useState<ResultType[]>([]);
 
   // ---- Handlers (same logic as your original) ----
   const handleGenerate = async (customData?: any) => {
@@ -63,7 +51,8 @@ export default function UploadForm() {
       if (!res.ok || json.error)
         throw new Error(json.error || "Something went wrong");
       setResult(json);
-      saveToHistory(json);
+      // 🔥 Save to history (Supabase when logged-in, else local)
+      await saveHistory(json);
       setLastPromptData(data);
       toast.success("✅ Product content generated!");
 
@@ -132,6 +121,15 @@ export default function UploadForm() {
       setImageUrl(URL.createObjectURL(file));
     }
   };
+
+  // Load history on mount
+  useEffect(() => {
+    (async () => {
+      const items = await loadHistory(10); // await here ✅
+      userSetHistory(items);
+      setLoading(false);
+    })();
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -274,13 +272,13 @@ export default function UploadForm() {
       )}
 
       {/* 🕘 Recent Generations */}
-      {!loading && loadHistory().length > 0 && (
+      {!loading && userHistory.length > 0 && (
         <div className="pt-8 space-y-4">
           <h3 className="text-gray-700 text-sm font-semibold">
             🕘 Recent Generations
           </h3>
           <div className="flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pb-2">
-            {loadHistory().map((item, idx) => (
+            {userHistory.map((item: ResultType, idx: number) => (
               <div
                 key={idx}
                 className="min-w-[280px] flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition"

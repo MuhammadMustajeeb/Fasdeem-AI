@@ -9,6 +9,7 @@ import {
   markReferralAsConverted,
 } from "@/lib/referralUtils"; // Adjust import based on your project structure
 import { supabase } from "@/lib/supabaseClient";
+import FeedbackButton  from "@/components/FeedbackButton"; // Adjust import based on your project structure
 
 
 export default function UploadForm() {
@@ -24,6 +25,7 @@ export default function UploadForm() {
   const [result, setResult] = useState<ResultType | null>(null);
   const [lastPromptData, setLastPromptData] = useState<any>(null);
   const [userHistory, userSetHistory] = useState<ResultType[]>([]);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // ---- Handlers (same logic as your original) ----
   const handleGenerate = async (customData?: any) => {
@@ -55,6 +57,8 @@ export default function UploadForm() {
       await saveHistory(json);
       setLastPromptData(data);
       toast.success("✅ Product content generated!");
+      // Feedback Buttons Trigger
+      setShowFeedback(true);
 
       // Save generation in DB
       const { data: userData } = await supabase.auth.getUser();
@@ -304,6 +308,8 @@ export default function UploadForm() {
           </div>
         </div>
       )}
+
+    <FeedbackButton open={showFeedback} onClose={() => setShowFeedback(false)} context={{ input: lastPromptData, output: result }} />
     </div>
   );
 }

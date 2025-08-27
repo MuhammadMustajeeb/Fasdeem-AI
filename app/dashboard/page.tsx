@@ -5,6 +5,7 @@ import { loadHistory, ResultType } from "@/lib/history";
 import { UserCircle } from "lucide-react";
 import FeedbackModal from "@/components/FeedbackModel";
 import Testimonials from "@/components/Testimonials";
+import TemplatesSection from "@/components/TemplatesSection";
 
 export default function Dashboard() {
   const [user] = useState({ name: "User" }); // Replace with session user later
@@ -95,6 +96,7 @@ export default function Dashboard() {
       )}
       </div>
       <Testimonials />
+      <TemplatesSection />
     </main>
     <FeedbackModal />
     </>

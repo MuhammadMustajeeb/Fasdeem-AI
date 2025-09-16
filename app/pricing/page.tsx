@@ -1,6 +1,27 @@
 "use client";
 
+import { useState } from "react";
+
 export default function PricingSection() {
+  const [loading, setLoading] = useState<string | null>(null);
+
+  async function trackUpgrade(plan: string) {
+    try {
+      setLoading(plan);
+      await fetch("/api/track-upgrade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      alert(`✅ Click tracked for ${plan} plan`);
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to track upgrade click");
+    } finally {
+      setLoading(null);
+    }
+  }
+
   return (
     <div className="py-16 bg-gray-50">
       <h2 className="text-4xl font-bold text-center mb-4">Choose Your Plan</h2>
@@ -18,8 +39,12 @@ export default function PricingSection() {
             <li>✅ WhatsApp + CSV export (with watermark)</li>
             <li>✅ Basic analytics</li>
           </ul>
-          <button className="mt-auto w-full py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-            Get Started
+          <button
+            onClick={() => trackUpgrade("Free")}
+            disabled={loading === "Free"}
+            className="mt-auto w-full py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300"
+          >
+            {loading === "Free" ? "Processing..." : "Get Started"}
           </button>
         </div>
 
@@ -32,8 +57,12 @@ export default function PricingSection() {
             <li>🚀 WhatsApp + CSV export (no watermark)</li>
             <li>🚀 Priority support</li>
           </ul>
-          <button className="mt-auto w-full py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700">
-            Upgrade to Starter
+          <button
+            onClick={() => trackUpgrade("Starter")}
+            disabled={loading === "Starter"}
+            className="mt-auto w-full py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700"
+          >
+            {loading === "Starter" ? "Processing..." : "Upgrade to Starter"}
           </button>
         </div>
 
@@ -47,8 +76,12 @@ export default function PricingSection() {
             <li>🔥 Save history + favorites</li>
             <li>🔥 Referral rewards</li>
           </ul>
-          <button className="mt-auto w-full py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700">
-            Upgrade to Growth
+          <button
+            onClick={() => trackUpgrade("Growth")}
+            disabled={loading === "Growth"}
+            className="mt-auto w-full py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700"
+          >
+            {loading === "Growth" ? "Processing..." : "Upgrade to Growth"}
           </button>
         </div>
 
@@ -62,8 +95,12 @@ export default function PricingSection() {
             <li>🏢 Custom integrations</li>
             <li>🏢 Dedicated account manager</li>
           </ul>
-          <button className="mt-auto w-full py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-            Contact Sales
+          <button
+            onClick={() => trackUpgrade("Business")}
+            disabled={loading === "Business"}
+            className="mt-auto w-full py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300"
+          >
+            {loading === "Business" ? "Processing..." : "Contact Sales"}
           </button>
         </div>
       </div>
